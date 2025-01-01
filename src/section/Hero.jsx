@@ -5,12 +5,10 @@ import { LuDivide } from 'react-icons/lu';
 import { RxCross2 } from 'react-icons/rx';
 import { CgMathMinus, CgMathPlus, CgMathEqual } from 'react-icons/cg';
 
-const styleFnbtn =
-  ' active:scale-95 transition rounded-xl bg-white dark:bg-gray-700 dark:text-red-300 text-red-400 shadow-md w-40 h-28 flex justify-center items-center text-2xl opacity-90 ';
-const styleFnbtn2 =
-  ' active:scale-95 transition rounded-xl bg-red-400 text-white shadow-lg w-40 h-28 flex justify-center items-center text-2xl opacity-90 ';
-const styleNumber =
-  ' active:scale-95 transition rounded-xl bg-white dark:bg-gray-700 dark:text-white text-black shadow-md w-40 h-30 flex justify-center items-center text-2xl opacity-90 ';
+const commonStyle = " active:scale-95 transition rounded-xl shadow-md flex justify-center items-center text-2xl opacity-90 w-40 h-28 md:h-20 "
+const styleFnbtn = commonStyle + ' bg-white text-red-400 dark:bg-gray-700 dark:text-red-300';
+const styleFnbtn2 = commonStyle + ' bg-red-400 text-white ';
+const styleNumber = commonStyle + ' bg-white text-black dark:bg-gray-700 dark:text-white ';
 
 const Button = ({ name, style, label, handleClick }) => {
   return (
@@ -31,8 +29,8 @@ const Hero = () => {
   };
 
   return (
-    <section className=" container m-auto h-dvh bg-gray-200 dark:bg-gray-800 p-5">
-      <div className=" dark:text-white mb-10 h-full flex flex-col justify-between w-full md:w-96 ">
+    <section className="h-dvh bg-gray-200 dark:bg-gray-800 p-5">
+      <div className=" dark:text-white mb-10 h-full flex flex-col justify-between w-full md:w-96 md:m-auto ">
         <div
           id="result_container"
           className="flex-1 flex flex-col gap-2 justify-end items-end"
@@ -101,7 +99,7 @@ const Hero = () => {
             <Button
               name={'*'}
               style={styleFnbtn}
-              label={'*'}
+              label={<RxCross2 />}
               handleClick={handleClick}
             />
           </div>
