@@ -7,6 +7,8 @@ import { CgMathMinus, CgMathPlus, CgMathEqual } from 'react-icons/cg';
 
 const styleFnbtn =
   ' active:scale-95 transition rounded-xl bg-white dark:bg-gray-700 dark:text-red-300 text-red-400 shadow-md w-40 h-28 flex justify-center items-center text-2xl opacity-90 ';
+const styleFnbtn2 =
+  ' active:scale-95 transition rounded-xl bg-red-400 text-white shadow-lg w-40 h-28 flex justify-center items-center text-2xl opacity-90 ';
 const styleNumber =
   ' active:scale-95 transition rounded-xl bg-white dark:bg-gray-700 dark:text-white text-black shadow-md w-40 h-30 flex justify-center items-center text-2xl opacity-90 ';
 
@@ -176,7 +178,7 @@ const Hero = () => {
             />
             <Button
               name={'='}
-              style={styleFnbtn + ' bg-red-400 text-white'}
+              style={styleFnbtn2}
               label={<CgMathEqual className=" pointer-events-none" />}
               handleClick={handleClick}
             />
