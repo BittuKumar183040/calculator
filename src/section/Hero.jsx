@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import { IoBackspaceOutline } from 'react-icons/io5';
 import { FiPercent } from 'react-icons/fi';
 import { LuDivide } from 'react-icons/lu';
 import { RxCross2 } from 'react-icons/rx';
 import { CgMathMinus, CgMathPlus, CgMathEqual } from 'react-icons/cg';
 
-const commonStyle = " active:scale-95 transition rounded-xl shadow-md flex justify-center items-center text-2xl opacity-90 w-40 h-28 md:h-20 "
-const styleFnbtn = commonStyle + ' bg-white text-red-400 dark:bg-gray-700 dark:text-red-300';
+const commonStyle =
+  ' active:scale-95 transition rounded-xl shadow-md flex justify-center items-center text-2xl opacity-90 w-40 h-28 md:h-20 ';
+const styleFnbtn =
+  commonStyle + ' bg-white text-red-400 dark:bg-gray-700 dark:text-red-300';
 const styleFnbtn2 = commonStyle + ' bg-red-400 text-white ';
-const styleNumber = commonStyle + ' bg-white text-black dark:bg-gray-700 dark:text-white ';
+const styleNumber =
+  commonStyle + ' bg-white text-black dark:bg-gray-700 dark:text-white ';
 
 const Button = ({ name, style, label, handleClick }) => {
   return (
@@ -19,13 +22,31 @@ const Button = ({ name, style, label, handleClick }) => {
 };
 
 const Hero = () => {
-  const [calc, setCalc] = useState([]);
-  let history = '';
-  let number1 = 24;
-  let number2 = 43;
+  const calcRef = useRef([]);
+  const resultRef = useRef('');
 
   const handleClick = (e) => {
-    console.log(e.target.name);
+    const input = e.target.name;
+    console.log(e.target);
+    if (input === 'AC') {
+      calcRef.current = [];
+      resultRef.current = '';
+    } else if (input === '<') {
+      calcRef.current.pop();
+    } else if (input === '=') {
+      try {
+        resultRef.current = eval(calcRef.current.join(''));
+      } catch {
+        resultRef.current = 'Error';
+      }
+    } else {
+      console.log(input);
+      calcRef.current.push(input);
+    }
+
+    console.log(calcRef.current, resultRef.current);
+
+    // Manually trigger
   };
 
   return (
@@ -36,13 +57,11 @@ const Hero = () => {
           className="flex-1 flex flex-col gap-2 justify-end items-end"
         >
           <p className="text-md opacity-60">
-            {number1}*{number2} = {number1 * number2}
+            {/* {number1}*{number2} = {number1 * number2} */}
           </p>
           <div className=" text-right">
-            <p className="text-2xl opacity-70">
-              {number1}*{number2}
-            </p>
-            <p className="text-4xl">{number1 * number2}</p>
+            <p className="text-2xl opacity-70">{/* {number1}*{number2} */}</p>
+            {/* <p className="text-4xl">{number1 * number2}</p> */}
           </div>
         </div>
         <div className="flex flex-col gap-2 pt-3">
@@ -99,7 +118,7 @@ const Hero = () => {
             <Button
               name={'*'}
               style={styleFnbtn}
-              label={<RxCross2 />}
+              label={<RxCross2 className=" pointer-events-none" />}
               handleClick={handleClick}
             />
           </div>
