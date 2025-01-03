@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { IoBackspaceOutline } from 'react-icons/io5';
 import { FiPercent } from 'react-icons/fi';
 import { LuDivide } from 'react-icons/lu';
@@ -42,22 +42,34 @@ const Hero = () => {
     element.appendChild(p);
   };
 
+  const replaceWithValue = (array, from, to) => {
+    const modifiedArray = array.map((num) => (num === from ? to : num));
+    return modifiedArray;
+  };
+
   const handleClick = (e) => {
-    const input = e.target.name;
+    handleCalculation(e.target.name)
+  }
+
+  const handleCalculation = (input) => {
     if (resultRef.current === '') {
       setResult('');
     }
-    if (input === 'AC') {
+    if (input === 'Delete') {
       calcRef.current = [];
       resultRef.current = '';
-    } else if (input === '<') {
+    } else if (input === 'Backspace') {
       calcRef.current.pop();
-    } else if (input === '=') {
+    } else if (input === 'Enter') {
       try {
         if (calcRef.current.length === 0) {
           return;
         }
-        resultRef.current = eval(calcRef.current.join(''));
+
+        const operations = replaceWithValue(calcRef.current, '%', '*1/100');
+
+        resultRef.current = eval(operations.join(''));
+
         setResult(resultRef.current);
         addHistory(calcRef.current.join(''), resultRef.current);
         resultRef.current = '';
@@ -67,46 +79,72 @@ const Hero = () => {
         resultRef.current = 'Error';
       }
     } else {
-      console.log(input);
-      calcRef.current.push(input);
+      if (
+        calcRef.current[calcRef.current.length - 1] === '%' &&
+        !isNaN(input)
+      ) {
+        calcRef.current.push('*', input);
+      } else {
+        calcRef.current.push(input);
+      }
     }
     setCalc([...calcRef.current]);
   };
+
+  useEffect(() => {
+    const listener = document.addEventListener('keydown', (e) => {
+      e.preventDefault()
+      const allowedKeys = /^[0-9=+\-.\%\/\*]$/;
+
+      if (e.key === "Backspace" || e.key === "Delete" || e.key === "Enter" || allowedKeys.test(e.key)) {
+        handleCalculation(e.key)
+
+      } else {
+        console.log('Disallowed key:', e.key);
+      }
+    });
+    return () => document.removeEventListener("keydown", listener);
+  }, [])
 
   return (
     <section className="h-dvh bg-gray-200 dark:bg-gray-800 p-5">
       <div className=" dark:text-white mb-10 h-full flex flex-col justify-between w-full md:w-96 md:m-auto ">
         <div
           id="result_container"
-          className="flex-1 flex flex-col gap-2 justify-end items-end"
+          className="flex-1 flex flex-col gap-2 justify-end items-end w-full"
         >
           <div
             ref={history}
-            className="text-sm opacity-60 w-96 leading-5 tracking-wide dark:border-[#fff3]
-              flex items-end flex-col absolute mb-24 pb-3 border-b-2 border-[#0003] 
+            className="text-sm opacity-60 w-96 leading-5 tracking-wide dark:border-[#fff3] text-right
+              flex items-end flex-col absolute mb-28 pb-3 border-b-2 border-[#0003] 
               md:bottom-0 md:right-10 md:border-none"
           ></div>
-          <div className=" text-right relative">
-            <p className="text-5xl">{result}</p>
+          <div className=" relative flex flex-col justify-end items-end w-full">
+            <input
+              type="text"
+              value={result}
+              className="text-5xl w-full outline-none bg-transparent text-right"
+              disabled
+            />
             <div className="opacity-70 flex items-center justify-end ">
               <p className="text-2xl mr-1">{calc.join('')}</p>
             </div>
             <div className="h-7 w-0.5 absolute bottom-0.5 right-0.5 overflow-hidden rounded-md">
-              <div className=" h-full bg-black animate-ping"></div>
+              <div className=" h-full bg-black dark:bg-white animate-ping"></div>
             </div>
           </div>
         </div>
         <div className="flex flex-col gap-2 pt-3">
           <div className="flex gap-4 mb-1 justify-between">
             <Button
-              name={'AC'}
+              name={'Delete'}
               style={styleFnbtn}
               label={'AC'}
               desc="clear"
               handleClick={handleClick}
             />
             <Button
-              name={'<'}
+              name={'Backspace'}
               style={styleFnbtn}
               label={
                 <IoBackspaceOutline
@@ -229,7 +267,7 @@ const Hero = () => {
               handleClick={handleClick}
             />
             <Button
-              name={'='}
+              name={'Enter'}
               style={styleFnbtn2}
               label={<CgMathEqual className=" pointer-events-none" />}
               handleClick={handleClick}
